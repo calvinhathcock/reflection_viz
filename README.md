@@ -1,6 +1,7 @@
 Generate word clouds for reflection responses
 
 Set-up:
+
 	- set-up venv (optional)
 	- pip install -r requirements.txt
 	- create ".env" file in root with the following keys:
