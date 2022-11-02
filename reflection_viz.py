@@ -17,7 +17,8 @@ COURSE_ID = os.environ.get("COURSE_ID")
 
 stopwords = set(STOPWORDS)
 
-os.mkdir('wordclouds')
+if not os.path.exists('wordclouds'):
+	os.mkdir('wordclouds')
 
 @click.command()
 @click.option("--name", default = None, help = "Which reflection to pull. ie. 'reflection 1'")
