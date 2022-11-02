@@ -4,7 +4,6 @@ import requests
 import click
 import pandas as pd
 import matplotlib.pyplot as plt
-from requests.structures import CaseInsensitiveDict
 from canvasapi import Canvas 
 from wordcloud import WordCloud, STOPWORDS
 from pathlib import Path
@@ -24,7 +23,12 @@ os.mkdir('wordclouds')
 @click.option("--name", default = None, help = "Which reflection to pull. ie. 'reflection 1'")
 def main(name: str):
 	
-	def create_wordcloud(column):
+	def create_wordcloud(column: str):
+		'''
+		given a column that corresponds to a question, 
+		generate a wordcloud from all the responses and 
+		write to wordclouds directory
+		'''
 
 		path = Path("wordclouds/" + str(name + " " + column[9:].split('?')[0]).replace('.', '').replace('/', ''))
 		print(path)
@@ -51,12 +55,14 @@ def main(name: str):
 	if name is None:
 		raise ValueError('Please provide a reflection to be pulled using --name option. Example: python3 reflection_viz --name="reflection 1"')
 
+	# canvas api wrapper makes this easy c:
 	canvas = Canvas(CANVAS_URL, CANVAS_TOKEN)
 
 	course = canvas.get_course(COURSE_ID)
 
 	quizzes = course.get_quizzes()
 
+	# find the correct quiz based on the CLI option provided
 	for q in quizzes:
 		if name.lower() in str(q.title).lower():
 			reflection = q
@@ -68,9 +74,11 @@ def main(name: str):
 
 	report_df.to_csv(f'{name}.csv') 
 
+	# load possible questions
 	with open('questions.txt') as f:
 		questions = f.read().splitlines()
 
+	# find columns that contain question responses
 	cols_of_interest = []
 	for col in report_df.columns:
 		for q in questions:
