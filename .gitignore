@@ -1,0 +1,5 @@
+.venv
+.env
+wordclouds/
+*.csv
+.ipynb_checkpoints*
