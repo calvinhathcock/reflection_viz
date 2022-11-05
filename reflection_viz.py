@@ -1,6 +1,6 @@
 import dotenv
 import os
-import requests 
+import time
 import click
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -71,7 +71,14 @@ def main(name: str):
 
 	report_resp = reflection.create_report(report_type = 'student_analysis')
 
-	report_df = pd.read_csv(report_resp.file['url']) 
+	try:
+		report_df = pd.read_csv(report_resp.file['url']) 
+	except:
+		print("Waiting for report to be generated... sleeping")
+		time.sleep(10)
+		report_resp = reflection.create_report(report_type = 'student_analysis')
+		report_df = pd.read_csv(report_resp.file['url']) 
+
 
 	report_df.to_csv(f'{name}.csv') 
 
